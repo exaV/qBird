@@ -3,5 +3,5 @@ qBird is a an agent that uses qLearning to master a clone of the popular Flappy 
 
 I put some sve files in /q_knowledge
 
-![Alt text](lib/qBirdinaction)
-here's a picture of qBird playing =)
+![Alt text](lib/qBirdinaction.png?raw=true "here's a picture of qBird playing =)")
+
