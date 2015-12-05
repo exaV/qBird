@@ -1,5 +1,5 @@
 # qBird
-qBird is a an agent that uses qLearning to master a clone of the popular Flappy Bird game.
+qBird is a an agent that uses Q-Learning to master a clone of the popular Flappy Bird game.
 
 I put some sve files in /q_knowledge
 
