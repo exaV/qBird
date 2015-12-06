@@ -1,7 +1,10 @@
 package main.learnUtils.noGraphics;
 
+import main.game.Game;
+import main.game.GamePanel;
 import main.game.Keyboard;
 import main.learnUtils.LearnGame;
+import main.learnUtils.LearnGamePanel;
 
 import javax.swing.*;
 
@@ -12,7 +15,7 @@ public class FastLearner {
     public static int WIDTH = 500;
     public static int HEIGHT = 500;
 
-    public static final String startValuesForQFile = "q_knowledge1000/Q_save2015_12_06__00_42_52_406__951.dat";
+    public static final String startValuesForQFile = "q_knowledge/Q_save2015_12_05__15_16_02_331__637.dat";
 
     public static void main(String[] args) {
 
@@ -25,7 +28,7 @@ public class FastLearner {
         Keyboard keyboard = Keyboard.getInstance();
         frame.addKeyListener(keyboard);
 
-        FastGamePanel panel = new FastGamePanel(new LearnGame());
+        FastGamePanel panel = new FastGamePanel(new LearnGame(startValuesForQFile));
         frame.add(panel);
     }
 

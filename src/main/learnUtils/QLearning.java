@@ -15,7 +15,6 @@ public class QLearning {
     private final int NOJUMP = 1;
     private final int maxHdiff = 500;
     private final int maxVdiff = 540;
-    private final String savePrefix = "q_knowledge_fixed/Q_save";
 
     //learn parameters
     private final double exploreFactor = 0f;
@@ -41,27 +40,25 @@ public class QLearning {
      */
     int Q[][][] = new int[maxHdiff][maxVdiff][2];
 
-    public QLearning(State prestate){
-        this.s = prestate;
+    public QLearning(){
+
     }
 
-    public QLearning(State prestate,String qValuesFile){
+    public QLearning(String qValuesFile){
         readQfromFile(qValuesFile);
-        this.s = prestate;
-
 
     }
 
-    public void logExperience(State post_s, boolean actualAction, int reward) {
-        this.post_s = post_s;
-        this.action = actualAction;
-        this.reward = reward;
+    public void logExperience(Experience e) {
+        s = e.s;
+        post_s = e.posts;
+        reward = e.reward;
+        action = e.action;
 
         updateQ();
     }
     public boolean getAction() {
-        action = Q[s.hdist][s.vdist][JUMP] > Q[s.hdist][s.vdist][NOJUMP];
-        return action; //returns true only if confidence to jump is higher
+        return Q[post_s.hdist][post_s.vdist][JUMP] > Q[post_s.hdist][post_s.vdist][NOJUMP]; //returns true only if confidence to jump is higher
     }
     public void logScore(int score) {
         if(score >highestScore){
@@ -80,16 +77,6 @@ public class QLearning {
         return saveQtoDisk(); //don't remember the save
     }
     private void updateQ(){
-        /*
-        update process works like this
-
-        1. Q is constructed with initials state saved in s
-        2. forever do
-            3. game asks what action to take (is logged in field action)
-            4. game is updated and state after update is logged in field post_s
-            5. s is updated with the knowledge gained from taking action
-            6. s becomes post_s
-         */
 
         int learnedValueOfLastAction = Q[s.hdist][s.vdist][action?JUMP:NOJUMP];
 
@@ -101,13 +88,13 @@ public class QLearning {
         //update Q of prestate with the value of the taken action
         Q[s.hdist][s.vdist][action?JUMP:NOJUMP] = calculatedValue;
 
-        s = post_s;
+        //s = post_s; is implicitly done in learngame. The next pre state that is logged is actually the old post state
     }
     private boolean saveQtoDisk() {
         BufferedWriter outputWriter = null;
         try {
             outputWriter = new BufferedWriter(
-                    new FileWriter(savePrefix + LocalDate.now().toString().replace("-","_")+"__"+LocalTime.now().toString().replace(":", "_").replace(".", "_")+"__"+highestScore+ ".dat"));
+                    new FileWriter("q_knowledge/Q_save" + LocalDate.now().toString().replace("-","_")+"__"+LocalTime.now().toString().replace(":", "_").replace(".", "_")+"__"+highestScore+ ".dat"));
 
             for (int i = 0; i < Q.length; i++) {
                 for (int j = 0; j < Q[0].length; j++) {

@@ -16,27 +16,20 @@ public class LearnGame extends Game {
     State postState;
 
     boolean actionTaken;
-    boolean requestedAction = true;
+    boolean requestedAction = false;
 
     final int REMIND_OF_SAVE_IN_TICKS = 1000;
     int checkSaveTicker = REMIND_OF_SAVE_IN_TICKS;
 
     public LearnGame(){
-        super();
-        prestate = logState();
-        //1.
-        log = new QLearning(prestate);
-
+        log = new QLearning();
     }
     public LearnGame(String qValueFile){
-        super();
-        prestate = logState();
-        log = new QLearning(prestate,qValueFile);
+        log = new QLearning(qValueFile);
     }
 
     @Override
     public void update() {
-        actionTaken = false;
         if(keyboard.isDown(KeyEvent.VK_S)){
             log.requestSave();
         }
@@ -55,18 +48,23 @@ public class LearnGame extends Game {
                 requestForRestart();
             }
 
-            //3. (note: jumping may fail if bird.jumpDelay isn't 0
-            if(log.getAction() && bird.jumpDelay ==0){
-                requestForJump();
-                actionTaken = true;
-            }
+            //prestate
+            actionTaken = bird.jumpDelay==10; //jumpDelay is set to 10 if jumped bird has jumped this tick :)
+            prestate = logState();
 
             bird.update();
 
             movePipes();
             checkForCollisions();
 
-            log.logExperience(logState(),actionTaken,bird.dead?-10000:1);
+            //after state
+
+            if(bird.jumpDelay==0 && !justReset){
+                log.logExperience(new Experience(prestate, actionTaken,bird.dead?-1000:1, logState()));
+                if(log.getAction()) requestForJump();
+
+            }
+
 
             justReset = false;
 
@@ -82,6 +80,7 @@ public class LearnGame extends Game {
             watchForReset();
 
         }
+
     }
 
     public void requestForRestart(){
@@ -127,11 +126,5 @@ public class LearnGame extends Game {
 
     }
 
-    @Override
-    public void restart() {
-        super.restart();
-        movePipes(); //otherwise pipes will be too far away and fuck up the learning
-        prestate = logState();
 
-    }
 }
