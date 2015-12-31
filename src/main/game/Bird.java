@@ -48,10 +48,11 @@ public class Bird {
         if (!dead && (requestJump || keyboard.isDown(KeyEvent.VK_SPACE))  && jumpDelay <= 0) {
             yvel = -10;
             jumpDelay = 10;
-            requestJump = false;
         }
 
         y += (int)yvel;
+        //jumprequests mustn't persist between updates, otherwise weird things happen
+        requestJump = false;
     }
 
     public Render getRender() {
