@@ -86,12 +86,12 @@ public class QLearning {
         int calculatedValue = learnedValueOfLastAction + v_posts_posta==0?1:v_posts_posta;
 
         //update Q of prestate with the value of the taken action
-        Q[s.hdist][s.vdist][action?JUMP:NOJUMP] = calculatedValue;
+        Q[s.hdist][s.vdist][action?JUMP:NOJUMP] += calculatedValue;
 
         //s = post_s; is implicitly done in learngame. The next pre state that is logged is actually the old post state
     }
     private boolean saveQtoDisk() {
-        BufferedWriter outputWriter = null;
+        BufferedWriter outputWriter;
         try {
             outputWriter = new BufferedWriter(
                     new FileWriter("q_knowledge/Q_save" + LocalDate.now().toString().replace("-","_")+"__"+LocalTime.now().toString().replace(":", "_").replace(".", "_")+"__"+highestScore+ ".dat"));
@@ -130,7 +130,7 @@ public class QLearning {
         }
     }
     private void readQfromFile(String filename) {
-        Scanner s = null;
+        Scanner s;
         try {
             s = new Scanner(new File(filename));
             for (int i = 0; i < Q.length; i++) {
