@@ -48,22 +48,28 @@ public class LearnGame extends Game {
                 requestForRestart();
             }
 
+            if(justReset){
+                movePipes();
+            }
+
             //prestate
-            actionTaken = bird.jumpDelay==10; //jumpDelay is set to 10 if jumped bird has jumped this tick :)
             prestate = logState();
 
             bird.update();
+            actionTaken = bird.jumpDelay==10; //jumpDelay is set to 10 if jumped bird has jumped this tick :)
+
 
             movePipes();
             checkForCollisions();
 
             //after state
-
-            if(bird.jumpDelay==0 && !justReset){
+            //only log if bird could take an action, has taken an action or died
+            if(actionTaken || bird.dead || bird.jumpDelay ==0){
                 log.logExperience(new Experience(prestate, actionTaken,bird.dead?-1000:1, logState()));
                 if(log.getAction()) requestForJump();
-
             }
+
+
 
 
             justReset = false;
