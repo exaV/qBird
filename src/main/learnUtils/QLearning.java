@@ -86,7 +86,7 @@ public class QLearning {
         int calculatedValue = learnedValueOfLastAction + v_posts_posta==0?1:v_posts_posta;
 
         //update Q of prestate with the value of the taken action
-        Q[s.hdist][s.vdist][action?JUMP:NOJUMP] += calculatedValue;
+        Q[s.hdist][s.vdist][action?JUMP:NOJUMP] = calculatedValue;
 
         //s = post_s; is implicitly done in learngame. The next pre state that is logged is actually the old post state
     }
